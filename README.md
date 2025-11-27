@@ -49,4 +49,3 @@ LocalStorage
 ESLint
 
 Git & GitHub
-git commit -m "Add professional README for Cashlog"
