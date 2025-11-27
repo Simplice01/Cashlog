@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+{% block title %}Budget{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-semibold mb-6">Budget</h1>
+<form method="post" class="bg-white rounded-2xl shadow p-6 space-y-4">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div>{{ form.libelle.label_tag }} {{ form.libelle }}</div>
+  <div class="grid sm:grid-cols-2 gap-4">
+    <div>{{ form.date_debut.label_tag }} {{ form.date_debut }}</div>
+    <div>{{ form.date_fin.label_tag }} {{ form.date_fin }}</div>
+  </div>
+  <div>{{ form.montant_budget.label_tag }} {{ form.montant_budget }}</div>
+  <div class="flex justify-end gap-2">
+    <a href="{% url 'budget_list' %}" class="px-4 py-2 rounded border">Annuler</a>
+    <button class="px-4 py-2 rounded bg-black text-white">Enregistrer</button>
+  </div>
+</form>
+{% endblock %}

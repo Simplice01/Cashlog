@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}Dépenses{% endblock %}
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-semibold">Mes Dépenses</h1>
+  <a href="{% url 'depense_add' %}" class="px-4 py-2 rounded border border-black text-black hover:bg-black hover:text-white">＋ Nouvelle dépense</a>
+</div>
+
+<form method="get" class="mb-4 grid sm:grid-cols-5 gap-2">
+  <input type="date" name="date" value="{{ val_date }}" class="rounded border px-3 py-2" placeholder="Jour exact">
+  <input type="date" name="debut" value="{{ val_debut }}" class="rounded border px-3 py-2" placeholder="Début">
+  <input type="date" name="fin" value="{{ val_fin }}" class="rounded border px-3 py-2" placeholder="Fin">
+  <select name="budget" class="rounded border px-3 py-2">
+    <option value="">— Tous budgets —</option>
+    {% for b in budgets %}
+      <option value="{{ b.id }}" {% if val_budget|default:'' == b.id|stringformat:'s' %}selected{% endif %}>{{ b.libelle }}</option>
+    {% endfor %}
+  </select>
+  <div class="flex gap-2">
+    <button class="px-3 py-2 rounded bg-black text-white">Filtrer</button>
+    <a href="{% url 'depense_list' %}" class="px-3 py-2 rounded border">Réinitialiser</a>
+  </div>
+</form>
+
+<div class="mb-3 text-sm text-gray-700">Total : <strong>{{ total }}</strong></div>
+
+<div class="overflow-x-auto bg-white rounded-2xl shadow">
+  <table class="min-w-full text-sm">
+    <thead class="bg-gray-50">
+      <tr class="text-left text-gray-600">
+        <th class="px-4 py-3">Date</th>
+        <th class="px-4 py-3">Objet</th>
+        <th class="px-4 py-3">Montant</th>
+        <th class="px-4 py-3">Budget</th>
+        <th class="px-4 py-3 text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {% for d in depenses %}
+      <tr class="hover:bg-gray-50">
+        <!-- Date -->
+        <td class="px-4 py-3">{{ d.date_depense }}</td>
+
+        <!-- Objet -->
+        <td class="px-4 py-3">{{ d.objet }}</td>
+
+        <!-- Montant -->
+        <td class="px-4 py-3">{{ d.montant }}</td>
+
+        <!-- Budget (avec fallback) -->
+        <td class="px-4 py-3">
+          {% if d.budget %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded bg-gray-100 text-gray-800">
+              {{ d.budget.libelle }}
+            </span>
+          {% else %}
+            <span class="inline-flex items-center px-2 py-0.5 rounded bg-amber-100 text-amber-800">
+              Sans budget
+            </span>
+          {% endif %}
+        </td>
+
+        <!-- Actions -->
+        <td class="px-4 py-3">
+          <div class="flex justify-end gap-2">
+            <a href="{% url 'depense_edit' d.pk %}" class="px-3 py-1.5 rounded bg-green-600 text-white hover:bg-green-700">Modifier</a>
+            <a href="{% url 'depense_delete' d.pk %}" class="px-3 py-1.5 rounded bg-rose-500 text-white hover:bg-rose-600">Supprimer</a>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="px-4 py-6 text-center text-gray-500">Aucune dépense.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

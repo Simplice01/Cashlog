@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Confirmation{% endblock %}
+{% block content %}
+<div class="bg-white rounded-2xl shadow p-6">
+  <p class="mb-4">Confirmer la suppression de : <strong>{{ object }}</strong> ?</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="flex gap-2">
+      <a href="javascript:history.back()" class="px-4 py-2 rounded border">Annuler</a>
+      <button class="px-4 py-2 rounded bg-rose-600 text-white">Supprimer</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

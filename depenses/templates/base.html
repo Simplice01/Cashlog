@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr" class="h-full bg-gray-50">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}CashLog{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-full text-gray-800 relative">
+<header class="bg-white border-b shadow-sm">
+  <div class="mx-auto max-w-6xl px-4 py-3">
+    <div class="flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="flex items-center gap-2 font-semibold text-lg">
+         <span>CashLog</span>
+      </a>
+
+      <!-- Actions à droite -->
+      <div class="flex items-center gap-3">
+        {% if user.is_authenticated %}
+          <span class="text-gray-700 hidden sm:inline">Bonjour, {{ user.nom }}</span>
+
+          <form method="post" action="{% url 'logout' %}" class="inline">
+            {% csrf_token %}
+            <button type="submit"
+                    class="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+              Déconnexion
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="px-3 py-2 rounded bg-black text-white hover:bg-gray-800">
+            Connexion
+          </a>
+          <a href="{% url 'signup' %}" class="px-3 py-2 rounded border border-black hover:bg-black hover:text-white">
+            Inscription
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if user.is_authenticated %}
+      <!-- Barre de navigation principale -->
+      <nav class="mt-3 flex items-center gap-4 text-sm">
+        <a href="{% url 'depense_list' %}"
+           class="px-3 py-1.5 rounded hover:bg-gray-100 {% if request.resolver_match.url_name|default:''|slice:':7' == 'depense' %}bg-gray-900 text-white hover:bg-gray-900{% else %}text-gray-800{% endif %}">
+          Dépenses
+        </a>
+        <a href="{% url 'budget_list' %}"
+           class="px-3 py-1.5 rounded hover:bg-gray-100 {% if request.resolver_match.url_name|default:''|slice:':6' == 'budget' %}bg-gray-900 text-white hover:bg-gray-900{% else %}text-gray-800{% endif %}">
+          Budgets
+        </a>
+      </nav>
+    {% endif %}
+  </div>
+</header>
+
+<main class="mx-auto max-w-6xl px-4 py-8">
+  {% if messages %}
+    <div class="mb-4 space-y-2">
+      {% for m in messages %}
+        <div class="px-4 py-2 rounded border bg-white text-sm">{{ m }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+{% if user.is_authenticated %}
+  <!-- Bouton flottant du chatbot -->
+  <a href="{% url 'assistant' %}"
+     class="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg transition transform hover:scale-105">
+    💬
+  </a>
+{% endif %}
+
+</body>
+</html>

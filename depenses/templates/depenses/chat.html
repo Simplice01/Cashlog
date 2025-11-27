@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Assistant{% endblock %}
+{% block content %}
+<div class="mx-auto max-w-3xl">
+  <h1 class="text-2xl font-semibold mb-4">Assistant finances</h1>
+
+  <div id="chat" class="bg-white rounded-2xl shadow p-4 h-[520px] overflow-y-auto space-y-3">
+    <div class="text-sm text-gray-500">
+      Pose-moi une question : <em>« total aujourd’hui »</em>, <em>« liste entre 2025-10-01 et 2025-10-15 »</em>,
+      <em>« budget restant »</em>, <em>« budget "rentrée" »</em>, <em>« ce mois »</em>…
+    </div>
+  </div>
+
+  <form id="form" class="mt-4 flex gap-2">
+    <input id="msg" type="text" class="flex-1 rounded border px-3 py-2" placeholder="Écris ton message…">
+    <button class="px-4 py-2 rounded bg-black text-white">Envoyer</button>
+  </form>
+</div>
+
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('form');
+const msg  = document.getElementById('msg');
+
+function addBubble(text, who='bot') {
+  const wrap = document.createElement('div');
+  const base = 'max-w-[85%] px-3 py-2 rounded-lg text-sm';
+  if (who === 'me') {
+    wrap.className = 'flex justify-end';
+    wrap.innerHTML = `<div class="${base} bg-black text-white">${text}</div>`;
+  } else {
+    wrap.className = 'flex justify-start';
+    wrap.innerHTML = `<div class="${base} bg-gray-100 text-gray-900 whitespace-pre-line">${text}</div>`;
+  }
+  chat.appendChild(wrap);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = msg.value.trim();
+  if (!text) return;
+  addBubble(text, 'me');
+  msg.value = '';
+  try {
+    const res = await fetch(window.location.href, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: JSON.stringify({ message: text })
+    });
+    const data = await res.json();
+    let reply = data.reply || '';
+    if (data.items && data.items.length) {
+      const lines = data.items.map(it => `• ${it.date_depense} — ${it.objet} : ${Number(it.montant).toLocaleString('fr-FR', {minimumFractionDigits:2})} FCFA`);
+      reply += `\n\n${lines.join('\n')}`;
+    }
+    addBubble(reply, 'bot');
+  } catch (err) {
+    addBubble("Oups, une erreur s'est produite.", 'bot');
+  }
+});
+
+function getCookie(name) {
+  const m = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+  return m ? m.pop() : '';
+}
+</script>
+{% endblock %}

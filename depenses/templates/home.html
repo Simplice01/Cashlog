@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Accueil | CashLog{% endblock %}
+{% block content %}
+
+<section class="text-center py-12">
+  <h1 class="text-4xl font-bold mb-4">Bienvenue sur <span class="text-blue-600">CashLog</span></h1>
+  <p class="text-gray-600 max-w-2xl mx-auto">
+    Gérez vos <strong>dépenses</strong> et <strong>budgets</strong> en toute simplicité.
+    CashLog vous aide à suivre vos finances, visualiser vos flux et prendre de meilleures décisions.
+  </p>
+
+  {% if user.is_authenticated %}
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="{% url 'budget_list' %}" class="px-5 py-3 rounded bg-blue-600 text-white hover:bg-blue-700">Mes Budgets</a>
+      <a href="{% url 'depense_list' %}" class="px-5 py-3 rounded bg-gray-900 text-white hover:bg-gray-800">Mes Dépenses</a>
+    </div>
+  {% else %}
+    <div class="mt-8 flex justify-center gap-4">
+      <a href="{% url 'login' %}" class="px-5 py-3 rounded bg-black text-white hover:bg-gray-800">Se connecter</a>
+      <a href="{% url 'signup' %}" class="px-5 py-3 rounded border border-black hover:bg-black hover:text-white">Créer un compte</a>
+    </div>
+  {% endif %}
+</section>
+
+<section class="mt-16 grid md:grid-cols-3 gap-6 text-center">
+  <div class="bg-white rounded-2xl shadow p-6">
+    <h3 class="font-semibold mb-2">💸 Suivez vos dépenses</h3>
+    <p class="text-gray-600 text-sm">Enregistrez vos achats et visualisez vos sorties d’argent par jour, semaine ou mois.</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow p-6">
+    <h3 class="font-semibold mb-2">📊 Gérez vos budgets</h3>
+    <p class="text-gray-600 text-sm">Créez des budgets et suivez vos limites pour mieux contrôler vos finances.</p>
+  </div>
+  <div class="bg-white rounded-2xl shadow p-6">
+    <h3 class="font-semibold mb-2">🤖 Assistant intelligent</h3>
+    <p class="text-gray-600 text-sm">Discutez avec l’assistant intégré pour obtenir des conseils personnalisés.</p>
+  </div>
+</section>
+
+{% endblock %}

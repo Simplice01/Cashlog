@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Connexion — CashLog{% endblock %}
+{% block content %}
+<div class="flex justify-center items-center min-h-[70vh]">
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">Connexion</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="w-full mt-4 bg-black text-white py-2 rounded-lg hover:bg-gray-800">
+        Se connecter
+      </button>
+    </form>
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Pas encore de compte ?
+      <a href="{% url 'signup' %}" class="text-blue-600 hover:underline">Inscrivez-vous</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
